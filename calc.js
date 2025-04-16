@@ -1,7 +1,6 @@
 
 let value = null;
 
-let buttonValue = null;
 
 let part1 = '';
 let part2 = '';
@@ -14,8 +13,7 @@ var buttons = document.querySelectorAll('.number')
 var specialButtons = document.querySelectorAll('.special')
 
 
-function setValue (button) {
-    value = buttonValue;
+function setValue (value) {
     if (part2 == '') {
         part1 = part1.concat(value);
     }
@@ -25,7 +23,9 @@ function setValue (button) {
     writeDisplay();
 };
 buttons.forEach(button => { 
-    button.addEventListener('click', () => buttonValue = button.value);
+    button.addEventListener('click', () => {
+        setValue(button.value);
+    });
 });
 
 let buttonValues = [];
@@ -38,15 +38,32 @@ let specialButtonValues = [];
 specialButtons.forEach(button => {
     let b = button.textContent;
     specialButtonValues.push(b);
-})
+});
 
 document.addEventListener('keydown', (event) => {                
     console.log(event.key);
     if (buttonValues.includes(event.key)){
-        value = event.key;
-        setValue(value);
+        setValue(event.key);
     }
+    if (specialButtonValues.includes(event.key)){     // special button key stroke .. ayo??
+        part2 = event.key;
+    }
+    if (event.key === "Enter"){
+        calculateFunction();
+    }
+    if (event.key === "Backspace"){
+        fullClear();
+    }
+    writeDisplay();
 }); 
+
+specialButtons.forEach(button => {
+    button.addEventListener('click', () => {        //special buttons click function
+        part2 = button.textContent;
+        writeDisplay();
+    })
+})
+
 
 const clear = document.getElementById('clear');
     clear.addEventListener('click' , () => {
@@ -56,12 +73,12 @@ const clear = document.getElementById('clear');
         display.textContent = '';
 });
 
-specialButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        part2 = button.textContent;
-        writeDisplay();
-    })
-})
+function fullClear(){
+    part1 = '';
+    part2 = '';
+    part3 = '';
+    display.textContent = 0;
+}
 
 function clearAfterResult(x){
     part1 = x;
@@ -80,7 +97,12 @@ test.addEventListener('click', () => {
 
 
 const calculate = document.getElementById('equals');
+
 calculate.addEventListener('click', () => {
+    calculateFunction();
+})
+
+function calculateFunction() {
     let result = 0;
     part1 = parseInt(part1);
     part3 = parseInt(part3);
@@ -102,10 +124,11 @@ calculate.addEventListener('click', () => {
             result = part1 % part3;
             break;
     }
-    clearAfterResult(result);
 
+    clearAfterResult(result);
     display.textContent = result;
-});
+}
+
 
 function writeDisplay(){
     display.textContent = part1 + " " + part2 + " " + part3;
