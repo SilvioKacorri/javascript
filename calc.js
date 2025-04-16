@@ -1,6 +1,8 @@
 
 let value = null;
 
+let buttonValue = null;
+
 let part1 = '';
 let part2 = '';
 let part3 = '';
@@ -13,7 +15,7 @@ var specialButtons = document.querySelectorAll('.special')
 
 
 function setValue (button) {
-    value = button.value;
+    value = buttonValue;
     if (part2 == '') {
         part1 = part1.concat(value);
     }
@@ -22,10 +24,29 @@ function setValue (button) {
     }
     writeDisplay();
 };
-
-buttons.forEach(button => {
-    button.addEventListener('click', () => setValue(button));
+buttons.forEach(button => { 
+    button.addEventListener('click', () => buttonValue = button.value);
 });
+
+let buttonValues = [];
+buttons.forEach(button => {      // pupullon array buttonValues me vlerat e butonave te klases .number
+    let a = button.value;
+    buttonValues.push(a)
+});
+
+let specialButtonValues = [];
+specialButtons.forEach(button => {
+    let b = button.textContent;
+    specialButtonValues.push(b);
+})
+
+document.addEventListener('keydown', (event) => {                
+    console.log(event.key);
+    if (buttonValues.includes(event.key)){
+        value = event.key;
+        setValue(value);
+    }
+}); 
 
 const clear = document.getElementById('clear');
     clear.addEventListener('click' , () => {
@@ -38,12 +59,12 @@ const clear = document.getElementById('clear');
 specialButtons.forEach(button => {
     button.addEventListener('click', () => {
         part2 = button.textContent;
-        console.log(part2)
+        writeDisplay();
     })
 })
 
-function clearAfterResult(){
-    part1 = '';
+function clearAfterResult(x){
+    part1 = x;
     part2 = '';
     part3 = '';
     display.textContent = null;
@@ -63,10 +84,10 @@ calculate.addEventListener('click', () => {
     let result = 0;
     part1 = parseInt(part1);
     part3 = parseInt(part3);
+    
     switch(part2){
         case "+":
             result = part1 + part3;
-            console.log(parseInt(result));
             break;
         case "/":
             result = part1 / part3;
@@ -81,16 +102,14 @@ calculate.addEventListener('click', () => {
             result = part1 % part3;
             break;
     }
-    clearAfterResult();
-
+    clearAfterResult(result);
 
     display.textContent = result;
-})
+});
 
 function writeDisplay(){
     display.textContent = part1 + " " + part2 + " " + part3;
-}
-
+};
 
 
 
